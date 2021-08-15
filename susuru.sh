@@ -8,8 +8,10 @@ txt_link='./susuru_txt/yabai_SUSURU_TV_gayo.txt'
   echo "'$txt_link' is not found.">&2
   exit 1
 }
-command textimg curl > /dev/null || {
-  echo "require: curl, textimg">&2
+
+# command textimg curl > /dev/null || {
+command convert textimg > /dev/null || {
+  echo "require: convert, textimg">&2
   exit 1
 }
 
@@ -32,18 +34,23 @@ h(){
 
   for i in d_h_*.png
   do
-    mogrify -resize "$max_width"x! "$i"
+    if [ "$ABS" = 1 ]
+    then
+      mogrify -resize "$max_width"x! "$i"
+    else
+      mogrify -resize "$max_width" "$i"
+    fi
   done
 
-  convert -append $(ls -tr d_h_*.png) D_h.png
+  convert -append $(ls -tr d_h_*.png) "D_h$([ "$ABS" = 1 ]&&echo abs).png"
   rm -f d_h_*.png
 
 }
 
 v(){
   c=0
-  # curl -sL "$txt_link" | sed y/〜ー/∫｜/ | while read -r i
-  sed y/〜ー/∫｜/ "$txt_link" | while read -r i
+  # curl -sL "$txt_link" | sed y/〜ーSUR/∫｜ＳＵＲ/ | while read -r i
+  sed y/〜ーSUR/∫｜ＳＵＲ/ "$txt_link" | while read -r i
   do
     [ -z "$i" ] && continue
     echo "$i" | grep -o . | textimg -o "d_v_$(printf %02d $c).png" -F"${1-100}"
@@ -58,9 +65,14 @@ v(){
 
   for i in d_v_*.png
   do
-    mogrify -resize "$max_width"x"$mid_height"! "$i"
+    if [ "$ABS" = 1 ]
+    then
+      mogrify -resize "$max_width"x"$mid_height"! "$i"
+    else
+      mogrify -resize "$max_width"x"$mid_height" "$i"
+    fi
   done
-  convert +append $(ls -t d_v_*.png) D_v.png
+  convert +append $(ls -t d_v_*.png) "D_v$([ "$ABS" = 1 ]&&echo abs).png"
   rm -f d_v_*.png
 }
 
