@@ -89,7 +89,7 @@ main(){
   then
     v "$size"
   fi
-  for i in $(ls D_*.png | grep nico -i)
+  for i in $(ls D_*.png | grep -v nico)
   do
     convert -resize 1280x720! "$i" "${i//\./.nico.}"
   done
