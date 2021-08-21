@@ -89,6 +89,10 @@ main(){
   then
     v "$size"
   fi
+  for i in D_?.png D_????.png
+  do
+    convert -resize 1280x720! "$i" "${i//\./.nico.}"
+  done
 }
 main "$@"
 exit "$?"
